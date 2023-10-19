@@ -189,6 +189,7 @@ namespace PROJECT_UEH_CSLT
             Console.WriteLine(ten);
             Console.SetCursorPosition(120 * 4 / 6 + 30, 28);
             Console.WriteLine(firstPlayerResult);
+            Console.ResetColor();
         }
         static void RemoveObject(int x, int y, int N) // Dùng để xóa vết của những đối tượng di chuyển cần xóa
         {
@@ -462,6 +463,7 @@ namespace PROJECT_UEH_CSLT
                 ReadBoard(ten, firstPlayerResult.ToString());
                 TakeBoard();
                 RemoveBoard();
+                PrintPlayerPoint();
                 PrintBoard();
                 Console.SetCursorPosition(boxRow / 3 - 1 - 9, boxColumn / 2 - 1);
                 Console.WriteLine("First player wins !");
@@ -544,6 +546,7 @@ namespace PROJECT_UEH_CSLT
                 ReadBoard(ten, firstPlayerResult.ToString());
                 TakeBoard();
                 RemoveBoard();
+                PrintPlayerPoint();
                 PrintBoard();
                 Console.SetCursorPosition(boxRow / 3 - 1 - 9, boxColumn / 2 - 1);
                 Console.WriteLine("First player wins !");
@@ -1329,7 +1332,6 @@ namespace PROJECT_UEH_CSLT
                     Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
                     Console.WriteLine("You Lose !");
                     Console.SetCursorPosition(boxRow / 3 * 2 + 4, 15);
-                    Console.WriteLine(heart);
                     Console.ReadKey();
                     break;
                 }
@@ -1347,6 +1349,11 @@ namespace PROJECT_UEH_CSLT
             money += 0;
             firstPlayerResult = 0;
             heart = 5;
+            for (int i = 0; i <= 28; i++)
+                RemoveObject(1, i, boxRow / 3 * 2 - 2);
+            for (int i = 0; i < 26; i++)
+                RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 28, boxRow / 3 - 1);
             goto Label;
         }
 

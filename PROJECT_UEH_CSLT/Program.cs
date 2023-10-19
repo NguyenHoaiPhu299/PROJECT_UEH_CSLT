@@ -47,7 +47,7 @@ namespace PROJECT_UEH_CSLT
         #endregion
 
         #region Variable for result
-        static int firstPlayerResult = 18; // Điểm số của bạn
+        static int firstPlayerResult = 0; // Điểm số của bạn
         /*static int AIPlayerResult = 0;*/
         #endregion
 
@@ -82,7 +82,7 @@ namespace PROJECT_UEH_CSLT
             { "23 vàng", "27 vàng", "30 vàng" },
             { "25 vàng", "28 vàng", "35 vàng" }
         };
-        static int money = 100;
+        static int money = 0;
         static int moneyChoice1_1 = 100;
         static int moneyChoice1_2 = 23;
         static int moneyChoice1_3 = 26;
@@ -1327,6 +1327,18 @@ namespace PROJECT_UEH_CSLT
                 if (ball1PositionX == boxRow / 3 * 2 - 2 || ball1PositionX == 1)
                     DrawAIPlayer();
                 MoveBall1(); // Dịch chuyện vị trí tiếp theo của quả banh (vết cũ vẫn còn)
+                if (firstPlayerResult == 30)
+                {
+                    for (int i = 1; i < 28; i++)
+                    {
+                        RemoveObject(1, i, boxRow / 3 * 2 - 2);
+                    }
+                    Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
+                    Console.WriteLine("Congatulation !");
+                    Console.SetCursorPosition(boxRow / 3 * 2 + 4, 15);
+                    Console.ReadKey();
+                    break;
+                }
                 if (heart == 0)
                 {
                     Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
@@ -1354,7 +1366,8 @@ namespace PROJECT_UEH_CSLT
             for (int i = 0; i < 26; i++)
                 RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 1);
             RemoveObject(boxRow / 3 * 2, 28, boxRow / 3 - 1);
-            goto Label;
+            if (firstPlayerResult != 30)
+                goto Label;
         }
 
         static void PlaySound()

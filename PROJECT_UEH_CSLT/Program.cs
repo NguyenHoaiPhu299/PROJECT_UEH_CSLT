@@ -323,49 +323,61 @@ namespace PROJECT_UEH_CSLT
             Console.WriteLine("Thể lệ trò chơi: ");
             Console.SetCursorPosition(boxRow / 3 - 11, boxColumn / 2);
             Console.WriteLine("Biệt danh của bạn là: ");
+            
             while (true)
             {
-                string ErrorLongName = "Tên quá dài, xin vui lòng nhập lại!";
-                string ErrorNumName = "Tên không được chỉ bao gồm số, xin vui lòng nhập lại!";
-                string ErrorExistName = "Tên đã tồn tại, xin vui lòng đặt tên khác!";
-                Console.SetCursorPosition(boxRow / 3 - 11, boxColumn / 2 + 1);
-                ten = Console.ReadLine();
-                TakeBoard(); // Hàm cập nhật danh sách tên cho ListName
-                RemoveObject(4, boxColumn - 3, ErrorNumName.Length + 15);
-                if (CheckName(ten) == false || ten.Length > 13 || ListName.Find(s => s == ten) != null)
+                try
                 {
+                    string ErrorLongName = "Tên quá dài, xin vui lòng nhập lại!";
+                    string ErrorNumName = "Tên không được chỉ bao gồm số, xin vui lòng nhập lại!";
+                    string ErrorExistName = "Tên đã tồn tại, xin vui lòng đặt tên khác!";
+                    Console.SetCursorPosition(boxRow / 3 - 11, boxColumn / 2 + 1);
+                    ten = Console.ReadLine();
+                    TakeBoard(); // Hàm cập nhật danh sách tên cho ListName
+                    RemoveObject(4, boxColumn - 3, ErrorNumName.Length + 15);
+                    if (CheckName(ten) == false || ten.Length > 13 || ListName.Find(s => s == ten) != null)
+                    {
 
-                    if (CheckName(ten) == false) //Nếu tên chỉ toàn là số
-                    {
-                        Console.SetCursorPosition(boxRow / 3 - 26, boxColumn - 3);
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(ErrorNumName);
-                        Console.ResetColor();
-                        RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
-                        continue;
+                        if (CheckName(ten) == false) //Nếu tên chỉ toàn là số
+                        {
+                            Console.SetCursorPosition(boxRow / 3 - 26, boxColumn - 3);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ErrorNumName);
+                            Console.ResetColor();
+                            RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
+                            continue;
+                        }
+                        else if (ten.Length > 13) //Nếu tên quá dài (dài hơn 13 ký tự)
+                        {
+                            Console.SetCursorPosition(boxRow / 3 - 17, boxColumn - 3);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ErrorLongName);
+                            Console.ResetColor();
+                            RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
+                            continue;
+                        }
+                        else //Nếu tên đã tồn tại sẵn rồi
+                        {
+                            Console.SetCursorPosition(boxRow / 3 - 20, boxColumn - 3);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ErrorExistName);
+                            Console.ResetColor();
+                            RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
+                            continue;
+                        }
                     }
-                    else if (ten.Length > 13) //Nếu tên quá dài (dài hơn 13 ký tự)
+                    else
                     {
-                        Console.SetCursorPosition(boxRow / 3 - 17, boxColumn - 3);
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(ErrorLongName);
-                        Console.ResetColor();
-                        RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
-                        continue;
-                    }
-                    else //Nếu tên đã tồn tại sẵn rồi
-                    {
-                        Console.SetCursorPosition(boxRow / 3 - 20, boxColumn - 3);
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(ErrorExistName);
-                        Console.ResetColor();
-                        RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
-                        continue;
+                        break; //Nhập đúng thì break
                     }
                 }
-                else
+                catch (Exception ex) // có lỗi thí chuyển qua phần này
                 {
-                    break; //Nhập đúng thì break
+                    Console.SetCursorPosition(boxRow / 3 - 11, boxColumn / 2 + 1);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                    Console.ResetColor();
+                    RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
                 }
             }
             string point = firstPlayerResult.ToString();
@@ -1024,25 +1036,25 @@ namespace PROJECT_UEH_CSLT
             Console.WindowHeight = 40;
             Console.CursorVisible = false;
             Console.OutputEncoding = global::System.Text.Encoding.UTF8;
-            try
+            Task.Run(() =>
             {
-                Task.Run(() =>
+                while (true)
                 {
-                    while (true)
-                    {
-                        PlaySound();
-                    }
-                });
-                RemoveScrollBars(); // Xóa bỏ thanh Scroll
+                    PlaySound();
+                }
+            });
+            RemoveScrollBars(); // Xóa bỏ thanh Scroll
             Label:
-                DrawMainBox(); // Vẽ khung chính
-                StartPage(); // Màn hình bắt đầu sẽ xuất hiện 
-                SetInitialPositions(); // Cài đặt vị trí ban đầu của các đối tượng
-                SetBall2AtTheMiddleOfTheGameField(); // Cài đặt vị trí ban đầu của quả bóng 2 (Cho level 3)
-                Champion();
-                PrintPlayerPoint();
-                DrawLevel(1);
-                while (true) // Dùng để di chuyển các đối tượng
+            DrawMainBox(); // Vẽ khung chính
+            StartPage(); // Màn hình bắt đầu sẽ xuất hiện 
+            SetInitialPositions(); // Cài đặt vị trí ban đầu của các đối tượng
+            SetBall2AtTheMiddleOfTheGameField(); // Cài đặt vị trí ban đầu của quả bóng 2 (Cho level 3)
+            Champion();
+            PrintPlayerPoint();
+            DrawLevel(1);
+            while (true) // Dùng để di chuyển các đối tượng
+            {
+                try
                 {
                     PrintPlayerPoint();
                     Champion();
@@ -1106,21 +1118,25 @@ namespace PROJECT_UEH_CSLT
                     DrawAIPlayer(); // In ra thanh dọc AI tại vị trí mới sau khi di chuyển
                     Thread.Sleep(speed); // Tốc độ quả bóng
                 }
-                money += 0;
-                firstPlayerResult = 0;
-                heart = 5;
-                for (int i = 0; i <= 28; i++)
-                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                for (int i = 0; i < 26; i++)
-                    RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 1);
-                RemoveObject(boxRow / 3 * 2, 28, boxRow / 3 - 1);
-                if (firstPlayerResult != 30)
-                    goto Label;
+                catch (Exception ex)
+                {
+                    Console.SetCursorPosition(boxRow / 3 - 11, boxColumn / 2 + 1);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                    Console.ResetColor();
+                    RemoveObject(boxRow / 3 - 11, boxColumn / 2 + 1, ten.Length);
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Lỗi trong trò chơi: " + ex.Message);
-            }
+            money += 0;
+            firstPlayerResult = 0;
+            heart = 5;
+            for (int i = 0; i <= 28; i++)
+                RemoveObject(1, i, boxRow / 3 * 2 - 2);
+            for (int i = 0; i < 26; i++)
+                RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 28, boxRow / 3 - 1);
+            if (firstPlayerResult != 30)
+                goto Label;
         }
 
         static void PlaySound()

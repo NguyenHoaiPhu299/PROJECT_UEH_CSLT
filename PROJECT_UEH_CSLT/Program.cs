@@ -1024,96 +1024,103 @@ namespace PROJECT_UEH_CSLT
             Console.WindowHeight = 40;
             Console.CursorVisible = false;
             Console.OutputEncoding = global::System.Text.Encoding.UTF8;
-            Task.Run(() =>
+            try
             {
-                while (true)
+                Task.Run(() =>
                 {
-                    PlaySound();
-                }
-            });
-            RemoveScrollBars(); // Xóa bỏ thanh Scroll
+                    while (true)
+                    {
+                        PlaySound();
+                    }
+                });
+                RemoveScrollBars(); // Xóa bỏ thanh Scroll
             Label:
-            DrawMainBox(); // Vẽ khung chính
-            StartPage(); // Màn hình bắt đầu sẽ xuất hiện 
-            SetInitialPositions(); // Cài đặt vị trí ban đầu của các đối tượng
-            SetBall2AtTheMiddleOfTheGameField(); // Cài đặt vị trí ban đầu của quả bóng 2 (Cho level 3)
-            Champion();
-            PrintPlayerPoint();
-            DrawLevel(1);
-            while (true) // Dùng để di chuyển các đối tượng
-            {
-                PrintPlayerPoint();
+                DrawMainBox(); // Vẽ khung chính
+                StartPage(); // Màn hình bắt đầu sẽ xuất hiện 
+                SetInitialPositions(); // Cài đặt vị trí ban đầu của các đối tượng
+                SetBall2AtTheMiddleOfTheGameField(); // Cài đặt vị trí ban đầu của quả bóng 2 (Cho level 3)
                 Champion();
-                if (Console.KeyAvailable)
+                PrintPlayerPoint();
+                DrawLevel(1);
+                while (true) // Dùng để di chuyển các đối tượng
                 {
-                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                    PrintPlayerPoint();
+                    Champion();
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
-                    if (keyInfo.Key == ConsoleKey.UpArrow)
-                    {
-                        MoveFirstPlayerUp();
-                        RemovePlayer1(keyInfo); // Xóa đi vết cũ của player 1 khi nó đi lên
+                        if (keyInfo.Key == ConsoleKey.UpArrow)
+                        {
+                            MoveFirstPlayerUp();
+                            RemovePlayer1(keyInfo); // Xóa đi vết cũ của player 1 khi nó đi lên
+                        }
+                        if (keyInfo.Key == ConsoleKey.DownArrow)
+                        {
+                            MoveFirstPlayerDown();
+                            RemovePlayer1(keyInfo); // Xóa đi vết cũ của player 1 khi nó đi xuống
+                        }
+                        if (keyInfo.Key == ConsoleKey.Q) // Nhấn Q => Dừng chương trình
+                        {
+                            PauseFunction();
+                        }
+                        if (keyInfo.Key == ConsoleKey.W) // Nhấn W => Dừng chương trình để mở shop
+                        {
+                            for (int i = 1; i <= 26; i++)
+                                RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 2);
+                            MainShop();
+                        }
                     }
-                    if (keyInfo.Key == ConsoleKey.DownArrow)
+                    AIPlayerAIMove();
+                    if (ball1PositionX == boxRow / 3 * 2 - 2 || ball1PositionX == 1)
+                        DrawAIPlayer();
+                    MoveBall1(); // Dịch chuyện vị trí tiếp theo của quả banh (vết cũ vẫn còn)
+                    if (firstPlayerResult == 30)
                     {
-                        MoveFirstPlayerDown();
-                        RemovePlayer1(keyInfo); // Xóa đi vết cũ của player 1 khi nó đi xuống
+                        for (int i = 1; i < 28; i++)
+                        {
+                            RemoveObject(1, i, boxRow / 3 * 2 - 2);
+                        }
+                        Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
+                        Console.WriteLine("Congatulation !");
+                        Console.SetCursorPosition(boxRow / 3 * 2 + 4, 15);
+                        Console.ReadKey();
+                        break;
                     }
-                    if (keyInfo.Key == ConsoleKey.Q) // Nhấn Q => Dừng chương trình
+                    if (heart == 0)
                     {
-                        PauseFunction();
+                        Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
+                        Console.WriteLine("You Lose !");
+                        Console.SetCursorPosition(boxRow / 3 * 2 + 4, 15);
+                        Console.ReadKey();
+                        break;
                     }
-                    if (keyInfo.Key == ConsoleKey.W) // Nhấn W => Dừng chương trình để mở shop
+                    RemoveBall1(); // Xóa vết cũ đi
+                    DrawBall(ball1PositionX, ball1PositionY); // In ra quả banh ở vị trí mới
+                    if (firstPlayerResult >= 20) // Nếu điểm lớn hơn ... thì sẽ nhảy vào level 3 (Có thêm một quả bóng nữa)
                     {
-                        for (int i = 1; i <= 26; i++)
-                            RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 2);
-                        MainShop();
+                        Level3();
+                        speed += 5;
                     }
+                    DrawFirstPlayer(); // In ra thanh dọc player 1 tại vị trí mới sau khi nhấn một phím để di chuyển
+                    DrawAIPlayer(); // In ra thanh dọc AI tại vị trí mới sau khi di chuyển
+                    Thread.Sleep(speed); // Tốc độ quả bóng
                 }
-                AIPlayerAIMove();
-                if (ball1PositionX == boxRow / 3 * 2 - 2 || ball1PositionX == 1)
-                    DrawAIPlayer();
-                MoveBall1(); // Dịch chuyện vị trí tiếp theo của quả banh (vết cũ vẫn còn)
-                if (firstPlayerResult == 30)
-                {
-                    for (int i = 1; i < 28; i++)
-                    {
-                        RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                    }
-                    Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
-                    Console.WriteLine("Congatulation !");
-                    Console.SetCursorPosition(boxRow / 3 * 2 + 4, 15);
-                    Console.ReadKey();
-                    break;
-                }
-                if (heart == 0)
-                {
-                    Console.SetCursorPosition(boxRow / 3 - 1 - 4, boxColumn / 2);
-                    Console.WriteLine("You Lose !");
-                    Console.SetCursorPosition(boxRow / 3 * 2 + 4, 15);
-                    Console.ReadKey();
-                    break;
-                }
-                RemoveBall1(); // Xóa vết cũ đi
-                DrawBall(ball1PositionX, ball1PositionY); // In ra quả banh ở vị trí mới
-                if (firstPlayerResult >= 20) // Nếu điểm lớn hơn ... thì sẽ nhảy vào level 3 (Có thêm một quả bóng nữa)
-                {
-                    Level3();
-                    speed += 5;
-                }
-                DrawFirstPlayer(); // In ra thanh dọc player 1 tại vị trí mới sau khi nhấn một phím để di chuyển
-                DrawAIPlayer(); // In ra thanh dọc AI tại vị trí mới sau khi di chuyển
-                Thread.Sleep(speed); // Tốc độ quả bóng
+                money += 0;
+                firstPlayerResult = 0;
+                heart = 5;
+                for (int i = 0; i <= 28; i++)
+                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
+                for (int i = 0; i < 26; i++)
+                    RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 1);
+                RemoveObject(boxRow / 3 * 2, 28, boxRow / 3 - 1);
+                if (firstPlayerResult != 30)
+                    goto Label;
             }
-            money += 0;
-            firstPlayerResult = 0;
-            heart = 5;
-            for (int i = 0; i <= 28; i++)
-                RemoveObject(1, i, boxRow / 3 * 2 - 2);
-            for (int i = 0; i < 26; i++)
-                RemoveObject(boxRow / 3 * 2, i, boxRow / 3 - 1);
-            RemoveObject(boxRow / 3 * 2, 28, boxRow / 3 - 1);
-            if (firstPlayerResult != 30)
-                goto Label;
+            catch (Exception ex)
+            {
+                Console.WriteLine("Lỗi trong trò chơi: " + ex.Message);
+            }
         }
 
         static void PlaySound()

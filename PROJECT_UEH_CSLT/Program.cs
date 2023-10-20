@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading;
@@ -60,16 +61,10 @@ namespace PROJECT_UEH_CSLT
         #region shop
         static int yourChoiceX = 2;
         static int yourChoiceY = 2;
+        static int[] arrChoice_PositionX = { 2, 28, 54, 2, 28, 54, 2, 28, 54 };
+        static int[] arrChoice_PositionY = { 2, 2, 2, 11, 11, 11, 20, 20, 20 };
+        static bool[] checkChoice = { false, false, false, false, false, false, false, false, false };
 
-        static int choice1_1PositionX = 2, choice1_1PositionY = 2; static bool checkChoice1_1 = false;
-        static int choice1_2PositionX = 28, choice1_2PositionY = 2; static bool checkChoice1_2 = false;
-        static int choice1_3PositionX = 54, choice1_3PositionY = 2; static bool checkChoice1_3 = false;
-        static int choice2_1PositionX = 2, choice2_1PositionY = 11; static bool checkChoice2_1 = false;
-        static int choice2_2PositionX = 28, choice2_2PositionY = 11; static bool checkChoice2_2 = false;
-        static int choice2_3PositionX = 54, choice2_3PositionY = 11; static bool checkChoice2_3 = false;
-        static int choice3_1PositionX = 2, choice3_1PositionY = 20; static bool checkChoice3_1 = false;
-        static int choice3_2PositionX = 28, choice3_2PositionY = 20; static bool checkChoice3_2 = false;
-        static int choice3_3PositionX = 54, choice3_3PositionY = 20; static bool checkChoice3_3 = false;
 
         static string[,] s = new string[,] {
             { "+2 heart", "+2 Chiều dài thanh", "+3 Chiều dài thanh" },
@@ -82,16 +77,8 @@ namespace PROJECT_UEH_CSLT
             { "23 vàng", "27 vàng", "30 vàng" },
             { "25 vàng", "28 vàng", "35 vàng" }
         };
-        static int money = 0;
-        static int moneyChoice1_1 = 100;
-        static int moneyChoice1_2 = 23;
-        static int moneyChoice1_3 = 26;
-        static int moneyChoice2_1 = 23;
-        static int moneyChoice2_2 = 27;
-        static int moneyChoice2_3 = 30;
-        static int moneyChoice3_1 = 25;
-        static int moneyChoice3_2 = 28;
-        static int moneyChoice3_3 = 35;
+        static int money = 100;
+        static int[] moneyChoice = { 100, 23, 26, 23, 27, 30, 25, 28, 35 };
         static int posX = 2;
         static int posY = 5;
         #endregion
@@ -109,16 +96,8 @@ namespace PROJECT_UEH_CSLT
         #region support function
         static void RemoveBoard() //Hàm xóa bảng
         {
-            int y = 17;
-            RemoveObject(120 * 4 / 6 + 8, y, Space);
-            y += 2;
-            RemoveObject(120 * 4 / 6 + 8, y, Space);
-            y += 2;
-            RemoveObject(120 * 4 / 6 + 8, y, Space);
-            y += 2;
-            RemoveObject(120 * 4 / 6 + 8, y, Space);
-            y += 2;
-            RemoveObject(120 * 4 / 6 + 8, y, Space);
+            for (int y = 17; y <= 25; y += 2)
+                RemoveObject(120 * 4 / 6 + 8, y, Space);
         }
         static int convert(string s) //Đổi chuỗi số thành dạng số (int, long)
         {
@@ -786,8 +765,8 @@ namespace PROJECT_UEH_CSLT
         #region Shop
         static void NotEnough()
         {
-            RemoveObject(boxRow / 3 * 2, 20, boxRow / 3 - 1);
-            RemoveObject(boxRow / 3 * 2, 21, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 8, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 9, boxRow / 3 - 1);
             Console.SetCursorPosition(boxRow * 5 / 6 - 10, 8);
             Console.WriteLine("Bạn Không đủ tiền mua");
             Console.SetCursorPosition(boxRow * 5 / 6 - 15, 9);
@@ -795,8 +774,8 @@ namespace PROJECT_UEH_CSLT
         }
         static void BuySuccess()
         {
-            RemoveObject(boxRow / 3 * 2, 20, boxRow / 3 - 1);
-            RemoveObject(boxRow / 3 * 2, 21, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 8, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 9, boxRow / 3 - 1);
             Console.SetCursorPosition(boxRow * 5 / 6 - 10, 8);
             Console.WriteLine("Bạn đã mua thành công");
             Console.SetCursorPosition(boxRow * 5 / 6 - 17, 9);
@@ -804,8 +783,8 @@ namespace PROJECT_UEH_CSLT
         }
         static void Bought()
         {
-            RemoveObject(boxRow / 3 * 2, 20, boxRow / 3 - 1);
-            RemoveObject(boxRow / 3 * 2, 21, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 8, boxRow / 3 - 1);
+            RemoveObject(boxRow / 3 * 2, 9, boxRow / 3 - 1);
             Console.SetCursorPosition(boxRow * 5 / 6 - 11, 8);
             Console.WriteLine("Bạn đã mua sản phẩm này");
             Console.SetCursorPosition(boxRow * 5 / 6 - 10, 9);
@@ -876,15 +855,8 @@ namespace PROJECT_UEH_CSLT
             Console.WriteLine("money: " + money);
             Console.SetCursorPosition(boxRow / 3 * 2 + 4, 5);
             Console.WriteLine("heart: " + heart);
-            Box(choice1_1PositionX, choice1_1PositionY);
-            Box(choice1_2PositionX, choice1_2PositionY);
-            Box(choice1_3PositionX, choice1_3PositionY);
-            Box(choice2_1PositionX, choice2_1PositionY);
-            Box(choice2_2PositionX, choice2_2PositionY);
-            Box(choice2_3PositionX, choice2_3PositionY);
-            Box(choice3_1PositionX, choice3_1PositionY);
-            Box(choice3_2PositionX, choice3_2PositionY);
-            Box(choice3_3PositionX, choice3_3PositionY);
+            for (int i = 0; i < 9; i++)
+                Box(arrChoice_PositionX[i], arrChoice_PositionY[i]);
             ShopContent(posX, posY);
         }
         static void MainShop()
@@ -943,296 +915,70 @@ namespace PROJECT_UEH_CSLT
                     }
                     if (keyInfo.Key == ConsoleKey.Enter)
                     {
-                        if (checkChoice1_1 == false)
+                        for (int i = 0; i < 9; i++)
                         {
-                            if (yourChoiceX == choice1_1PositionX && yourChoiceY == choice1_1PositionY)
+                            if (checkChoice[i] == false)
                             {
-                                for (int i = 1; i <= 28; i++)
+                                if (yourChoiceX == arrChoice_PositionX[i] && yourChoiceY == arrChoice_PositionY[i])
                                 {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice1_1)
-                                {
-                                    heart += 2;
-                                    checkChoice1_1 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice1_1;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice1_1PositionX && yourChoiceY == choice1_1PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice1_2 == false)
-                        {
-                            if (yourChoiceX == choice1_2PositionX && yourChoiceY == choice1_2PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice1_2)
-                                {
-                                    if (firstPlayerPadSize + firstPlayerPosition > 28)
+                                    for (int j = 1; j <= 28; j++)
                                     {
-                                        firstPlayerPosition -= 2;
+                                        RemoveObject(1, j, boxRow / 3 * 2 - 2);
                                     }
-                                    firstPlayerPadSize += 2;
-                                    checkChoice1_2 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice1_2;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice1_2PositionX && yourChoiceY == choice1_2PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice1_3 == false)
-                        {
-                            if (yourChoiceX == choice1_3PositionX && yourChoiceY == choice1_3PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice1_3)
-                                {
-                                    if (firstPlayerPadSize + firstPlayerPosition > 28)
+                                    if (money >= moneyChoice[i])
                                     {
-                                        firstPlayerPosition -= 3;
+                                        switch (i)
+                                        {
+                                            case 0:
+                                                heart += 2;
+                                                break;
+                                            case 1:
+                                                if (firstPlayerPadSize + firstPlayerPosition > 28)
+                                                    firstPlayerPosition -= 2;
+                                                firstPlayerPadSize += 2;
+                                                break;
+                                            case 2:
+                                                if (firstPlayerPadSize + firstPlayerPosition > 28)
+                                                    firstPlayerPosition -= 3;
+                                                firstPlayerPadSize += 3;
+                                                break;
+                                            case 3:
+                                                speed += 40;
+                                                break;
+                                            case 4:
+                                                speed += 60;
+                                                break;
+                                            case 5:
+                                                speed += 100;
+                                                break;
+                                            case 6:
+                                                prob -= 5;
+                                                break;
+                                            case 7:
+                                                prob -= 10;
+                                                break;
+                                            case 8:
+                                                prob -= 20;
+                                                break;
+                                        }
+                                        checkChoice[i] = true;
+                                        BuySuccess();
+                                        money -= moneyChoice[i];
+                                        RemoveObject(boxRow / 3 * 2 + 11, 3, 6);
+                                        Console.WriteLine(money);
                                     }
-                                    firstPlayerPadSize += 3;
-                                    checkChoice1_3 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice1_3;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
+                                    else
+                                    {
+                                        NotEnough();
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice1_3PositionX && yourChoiceY == choice1_3PositionY)
+                            else
                             {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice2_1 == false)
-                        {
-                            if (yourChoiceX == choice2_1PositionX && yourChoiceY == choice2_1PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
+                                if (yourChoiceX == arrChoice_PositionX[i] && yourChoiceY == arrChoice_PositionY[i])
                                 {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
+                                    Bought();
                                 }
-                                if (money >= moneyChoice2_1)
-                                {
-                                    speed += 40;
-                                    checkChoice2_1 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice2_1;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice2_1PositionX && yourChoiceY == choice2_1PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice2_2 == false)
-                        {
-                            if (yourChoiceX == choice2_2PositionX && yourChoiceY == choice2_2PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice2_2)
-                                {
-                                    firstPlayerPadSize += 2;
-                                    speed += 60;
-                                    checkChoice2_2 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice2_2;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice2_2PositionX && yourChoiceY == choice2_2PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice2_3 == false)
-                        {
-                            if (yourChoiceX == choice2_3PositionX && yourChoiceY == choice2_3PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice2_3)
-                                {
-                                    speed += 100;
-                                    checkChoice2_3 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice2_3;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice2_3PositionX && yourChoiceY == choice2_3PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice3_1 == false)
-                        {
-                            if (yourChoiceX == choice3_1PositionX && yourChoiceY == choice3_1PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice3_1)
-                                {
-                                    prob -= 5;
-                                    checkChoice3_1 = true;
-                                    BuySuccess();
-                                    money -= moneyChoice3_1;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice3_1PositionX && yourChoiceY == choice3_1PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice3_2 == false)
-                        {
-                            if (yourChoiceX == choice3_2PositionX && yourChoiceY == choice3_2PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice3_2)
-                                {
-                                    prob -= 10; ;
-                                    checkChoice3_2 = true;
-                                    RemoveObject(boxRow / 3 * 2, 20, boxRow / 3 - 1);
-                                    RemoveObject(boxRow / 3 * 2, 21, boxRow / 3 - 1);
-                                    BuySuccess();
-                                    money -= moneyChoice3_2;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice3_2PositionX && yourChoiceY == choice3_2PositionY)
-                            {
-                                Bought();
-                            }
-                        }
-
-                        if (checkChoice3_3 == false)
-                        {
-                            if (yourChoiceX == choice3_3PositionX && yourChoiceY == choice3_3PositionY)
-                            {
-                                for (int i = 1; i <= 28; i++)
-                                {
-                                    RemoveObject(1, i, boxRow / 3 * 2 - 2);
-                                }
-                                if (money >= moneyChoice3_2)
-                                {
-                                    prob -= 20;
-                                    checkChoice3_3 = true;
-                                    RemoveObject(boxRow / 3 * 2, 20, boxRow / 3 - 1);
-                                    RemoveObject(boxRow / 3 * 2, 21, boxRow / 3 - 1);
-                                    BuySuccess();
-                                    money -= moneyChoice3_3;
-                                    RemoveObject(boxRow / 3 * 2 + 11, 3, 3);
-                                    Console.WriteLine(money);
-                                }
-                                else
-                                {
-                                    NotEnough();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (yourChoiceX == choice3_3PositionX && yourChoiceY == choice3_3PositionY)
-                            {
-                                Bought();
                             }
                         }
                     }
